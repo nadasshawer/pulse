@@ -1,28 +1,40 @@
 import type { FastifyInstance } from "fastify";
-
-type Metric = {
-  name: string;
-  value: number;
-  receivedAt: string;
-};
-
-const metrics: Metric[] = [];
+import { db } from "../database.js";
 
 export async function metricsRoutes(app: FastifyInstance) {
-  app.get("/metrics", async (_request, reply) => {
-    reply.status(200);
+  app.get("/metrics", async (_request, _reply) => {
+    const metrics = await db.metrics.findMany({
+      orderBy: { received_at: "desc" },
+    });
+
     return metrics;
   });
 
-  app.post("/metrics", (request, reply) => {
-    const rBody = request.body as { name: string; value: number };
-    const m: Metric = {
-      name: rBody.name,
-      value: rBody.value,
-      receivedAt: new Date().toISOString(),
-    };
-    metrics.push(m);
-    reply.status(201);
-    return m;
-  });
+  app.post(
+    "/metrics",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["name", "value"],
+          properties: {
+            name: { type: "string", minLength: 1 },
+            value: { type: "number" },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      const reqBody = request.body as { name: string; value: number };
+      const newMetric = await db.metrics.create({
+        data: {
+          name: reqBody.name,
+          value: reqBody.value,
+        },
+      });
+
+      reply.status(201);
+      return newMetric;
+    },
+  );
 }
