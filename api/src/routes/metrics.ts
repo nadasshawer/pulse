@@ -3,11 +3,11 @@ import { db } from "../database.js";
 
 export async function metricsRoutes(app: FastifyInstance) {
   app.get("/metrics", async (_request, _reply) => {
-    const metrics = await db.metrics.findMany({
-      orderBy: { received_at: "desc" },
+    const result = await db.metric.findMany({
+      orderBy: { receivedAt: "desc" },
     });
 
-    return metrics;
+    return result;
   });
 
   app.post(
@@ -16,20 +16,30 @@ export async function metricsRoutes(app: FastifyInstance) {
       schema: {
         body: {
           type: "object",
-          required: ["name", "value"],
+          required: ["name", "value", "hostname", "projectId"],
           properties: {
             name: { type: "string", minLength: 1 },
             value: { type: "number" },
+            hostname: { type: "string", minLength: 1 },
+            projectId: { type: "integer" },
           },
         },
       },
     },
     async (request, reply) => {
-      const reqBody = request.body as { name: string; value: number };
-      const newMetric = await db.metrics.create({
+      const reqBody = request.body as {
+        name: string;
+        value: number;
+        hostname: string;
+        projectId: number;
+      };
+
+      const newMetric = await db.metric.create({
         data: {
           name: reqBody.name,
           value: reqBody.value,
+          hostname: reqBody.hostname,
+          projectId: reqBody.projectId,
         },
       });
 

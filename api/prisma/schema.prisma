@@ -7,9 +7,19 @@ datasource db {
   provider = "postgresql"
 }
 
-model metrics {
-  id          Int   @id @default(autoincrement())
-  name        String
-  value       Float
-  received_at DateTime @default(now()) @db.Timestamptz(6)
+model Metric {
+  id         Int      @id @default(autoincrement())
+  name       String
+  value      Float
+  hostname   String
+  receivedAt DateTime @default(now()) @map("received_at") @db.Timestamptz(6)
+  projectId  Int      @map("project_id")
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  metrics   Metric[]
 }

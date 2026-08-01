@@ -1,4 +1,6 @@
 {
   "name": "cpu",
-  "value": 42
+  "value": 42,
+  "hostname": "Nada-PC",
+  "projectId": 1
 }
