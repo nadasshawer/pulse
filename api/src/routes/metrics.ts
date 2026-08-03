@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify";
+import type { Metric } from "../types/models.js";
 import { db } from "../database.js";
 
-export async function metricsRoutes(app: FastifyInstance) {
+export async function metricsRoutes(app: FastifyInstance): Promise<void> {
   app.get("/metrics", async (_request, _reply) => {
     const result = await db.metric.findMany({
       orderBy: { receivedAt: "desc" },
@@ -27,13 +28,7 @@ export async function metricsRoutes(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const reqBody = request.body as {
-        name: string;
-        value: number;
-        hostname: string;
-        projectId: number;
-      };
-
+      const reqBody = request.body as Metric;
       const newMetric = await db.metric.create({
         data: {
           name: reqBody.name,

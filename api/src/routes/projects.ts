@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify";
+import type { Project } from "../types/models.js";
 import { db } from "../database.js";
 
-export async function projectRoutes(app: FastifyInstance) {
+export async function projectRoutes(app: FastifyInstance): Promise<void> {
   app.get("/projects", async (_request, _reply) => {
     const result = await db.project.findMany({
       orderBy: { createdAt: "desc" },
@@ -22,10 +23,7 @@ export async function projectRoutes(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const reqBody = request.body as {
-        name: string;
-      };
-
+      const reqBody = request.body as Project;
       const newProject = await db.project.create({
         data: {
           name: reqBody.name,

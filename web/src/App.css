@@ -1,0 +1,35 @@
+h1 {
+  color: rgb(6, 193, 222);
+}
+
+p {
+  color: beige;
+  margin-bottom: 24px;
+}
+
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.metrics-table th,
+.metrics-table td {
+  padding: 10px 20px;
+  border-bottom: 1px solid #2e303a;
+}
+
+.metrics-table th {
+  background: #289ebb;
+  color: #f3f4f6;
+  font-weight: 600;
+}
+
+.metrics-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.metrics-table tbody tr:hover {
+  background: rgba(29, 238, 176, 0.08);
+}

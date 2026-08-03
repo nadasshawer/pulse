@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import type { FastifyError } from "fastify";
 import { Prisma } from "./generated/prisma/client.js";
 import { metricsRoutes } from "./routes/metrics.js";
@@ -31,7 +32,8 @@ export async function buildApp() {
     });
   });
 
-  // Register routes
+  // Register CORS & routes
+  await app.register(cors, { origin: true });
   await app.register(metricsRoutes);
   await app.register(healthRoutes);
   await app.register(projectRoutes);
