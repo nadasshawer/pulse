@@ -2,18 +2,20 @@ import type { memoryMetric } from "./types/memory.js";
 
 export async function reportMemory(
   API_URL: string,
-  PROJECT_ID: number,
+  API_KEY: string,
   memoryData: memoryMetric,
 ): Promise<void> {
   try {
     const result = await fetch(`${API_URL}/metrics`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": `${API_KEY}`,
+      },
       body: JSON.stringify({
         name: "memory_used_percent",
         hostname: memoryData.hostname,
         value: memoryData.usedMemoryPercent,
-        projectId: PROJECT_ID,
       }),
     });
 

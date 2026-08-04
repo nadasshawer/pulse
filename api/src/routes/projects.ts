@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { Project } from "../types/models.js";
 import { db } from "../database.js";
+import { randomBytes } from "node:crypto";
 
 export async function projectRoutes(app: FastifyInstance): Promise<void> {
   app.get("/projects", async (_request, _reply) => {
@@ -23,10 +24,12 @@ export async function projectRoutes(app: FastifyInstance): Promise<void> {
       },
     },
     async (request, reply) => {
+      const apiKey = randomBytes(32).toString("hex");
       const reqBody = request.body as Project;
       const newProject = await db.project.create({
         data: {
           name: reqBody.name,
+          apiKey: apiKey,
         },
       });
 
