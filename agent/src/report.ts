@@ -1,9 +1,9 @@
-import type { memoryMetric } from "./types/memory.js";
+import type { Metric } from "./types/metrics.js";
 
-export async function reportMemory(
+export async function reportMetric(
   API_URL: string,
   API_KEY: string,
-  memoryData: memoryMetric,
+  metric: Metric,
 ): Promise<void> {
   try {
     const result = await fetch(`${API_URL}/metrics`, {
@@ -13,9 +13,9 @@ export async function reportMemory(
         "X-API-Key": `${API_KEY}`,
       },
       body: JSON.stringify({
-        name: "memory_used_percent",
-        hostname: memoryData.hostname,
-        value: memoryData.usedMemoryPercent,
+        name: metric.name,
+        hostname: metric.hostname,
+        value: metric.value,
       }),
     });
 

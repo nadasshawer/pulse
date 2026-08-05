@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { collectMemoryData } from "./memory.js";
-import { reportMemory } from "./report.js";
+import { collectCPUData } from "./cpu.js";
+import { reportMetric } from "./report.js";
 
 const API_URL = process.env.API_URL as string;
 const API_KEY = process.env.API_KEY as string;
@@ -13,8 +14,10 @@ if (!API_URL || !API_KEY) {
 
 async function tick(): Promise<void> {
   try {
-    const data = collectMemoryData();
-    await reportMemory(API_URL, API_KEY, data);
+    const memoryData = collectMemoryData();
+    const cpuData = await collectCPUData();
+    await reportMetric(API_URL, API_KEY, memoryData);
+    await reportMetric(API_URL, API_KEY, cpuData);
   } catch (err) {
     console.error("Tick failed:", err);
   }
