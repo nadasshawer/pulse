@@ -3,10 +3,27 @@ import type { Metric } from "../types/models.js";
 import { db } from "../database.js";
 
 export async function metricsRoutes(app: FastifyInstance): Promise<void> {
-  app.get("/metrics", async (_request, reply) => {
-    const result = await db.metric.findMany({
-      orderBy: { receivedAt: "desc" },
-    });
+  app.get("/metrics", async (request, reply) => {
+    let result;
+    const params = request.query as { projectId?: string };
+
+    if (params.projectId === undefined) {
+      result = await db.metric.findMany({
+        orderBy: { receivedAt: "desc" },
+      });
+    } else {
+      const projectId = Number(params.projectId);
+
+      if (!Number.isInteger(projectId) || projectId < 1) {
+        reply.status(400);
+        return { error: "Invalid projectId" };
+      } else {
+        result = await db.metric.findMany({
+          orderBy: { receivedAt: "desc" },
+          where: { projectId: projectId },
+        });
+      }
+    }
 
     return result;
   });
