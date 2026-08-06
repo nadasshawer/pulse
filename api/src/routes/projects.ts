@@ -7,6 +7,7 @@ export async function projectRoutes(app: FastifyInstance): Promise<void> {
   app.get("/projects", async (_request, _reply) => {
     const result = await db.project.findMany({
       orderBy: { createdAt: "desc" },
+      select: { id: true, name: true, createdAt: true },
     });
 
     return result;
