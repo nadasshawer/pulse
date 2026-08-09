@@ -28,6 +28,31 @@ export async function metricsRoutes(app: FastifyInstance): Promise<void> {
     return result;
   });
 
+  app.get("/metrics/latest", async (request, reply) => {
+    const params = request.query as { projectId: string };
+    const projectId = Number(params.projectId);
+
+    if (!projectId || projectId < 1 || !Number.isInteger(projectId)) {
+      reply.status(400);
+      return { error: "Invalid projectId" };
+    }
+
+    const result = await db.$queryRaw`
+      SELECT DISTINCT ON (hostname, name)
+        id,
+        name,
+        hostname,
+        value,
+        received_at AS "receivedAt",
+        project_id AS "projectId"
+      FROM metrics
+      WHERE project_id = ${projectId}
+      ORDER BY hostname, name, received_at DESC
+    `;
+
+    return result;
+  });
+
   app.post(
     "/metrics",
     {
