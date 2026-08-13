@@ -5,6 +5,7 @@ import { Prisma } from "./generated/prisma/client.js";
 import { metricsRoutes } from "./routes/metrics.js";
 import { healthRoutes } from "./routes/health.js";
 import { projectRoutes } from "./routes/projects.js";
+import { alertRulesRoutes } from "./routes/alertRules.js";
 
 // Build app
 export async function buildApp() {
@@ -37,6 +38,7 @@ export async function buildApp() {
   await app.register(metricsRoutes);
   await app.register(healthRoutes);
   await app.register(projectRoutes);
+  await app.register(alertRulesRoutes);
 
   return app;
 }
