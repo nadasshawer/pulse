@@ -1,0 +1,6 @@
+{
+  "projectId": 3,
+  "metricName": "memory_metric",
+  "threshold": 90,
+  "operator": "gt"
+}

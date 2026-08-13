@@ -3,67 +3,70 @@ import type { Metric } from "../types/models.js";
 import { db } from "../database.js";
 
 export async function metricsRoutes(app: FastifyInstance): Promise<void> {
-  app.get("/metrics", async (request, reply) => {
-    const params = request.query as {
-      projectId?: string;
-      from?: string;
-      to?: string;
-    };
+  app.get(
+    "/metrics",
+    {
+      schema: {
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: { type: "integer", minimum: 1 },
+            from: { type: "string", format: "date-time" },
+            to: { type: "string", format: "date-time" },
+          },
+        },
+      },
+    },
+    async (request, _reply) => {
+      const params = request.query as {
+        projectId?: number;
+        from?: string;
+        to?: string;
+      };
 
-    const where: {
-      projectId?: number;
-      receivedAt?: { gte?: Date; lte?: Date };
-    } = {};
+      const where: {
+        projectId?: number;
+        receivedAt?: { gte?: Date; lte?: Date };
+      } = {};
 
-    if (params.projectId) {
-      const projectId = Number(params.projectId);
-
-      if (!Number.isInteger(projectId) || projectId < 1) {
-        reply.status(400);
-        return { error: "Invalid projectId" };
-      } else {
-        where.projectId = projectId;
+      if (params.projectId !== undefined) {
+        where.projectId = params.projectId;
       }
-    }
 
-    if (params.from) {
-      const fromDate = new Date(params.from);
-      if (fromDate === undefined || Number.isNaN(fromDate.getTime())) {
-        reply.status(400);
-        return { error: "Invalid from date" };
-      } else {
-        where.receivedAt = { ...where.receivedAt, gte: fromDate };
+      if (params.from !== undefined) {
+        where.receivedAt = { ...where.receivedAt, gte: new Date(params.from) };
       }
-    }
 
-    if (params.to) {
-      const toDate = new Date(params.to);
-      if (toDate === undefined || Number.isNaN(toDate.getTime())) {
-        reply.status(400);
-        return { error: "Invalid to date" };
-      } else {
-        where.receivedAt = { ...where.receivedAt, lte: toDate };
+      if (params.to !== undefined) {
+        where.receivedAt = { ...where.receivedAt, lte: new Date(params.to) };
       }
-    }
 
-    const result = await db.metric.findMany({
-      where,
-      orderBy: { receivedAt: "desc" },
-    });
+      const result = await db.metric.findMany({
+        where,
+        orderBy: { receivedAt: "desc" },
+      });
 
-    return result;
-  });
+      return result;
+    },
+  );
 
-  app.get("/metrics/latest", async (request, reply) => {
-    const params = request.query as { projectId: string };
-    const projectId = Number(params.projectId);
+  app.get(
+    "/metrics/latest",
+    {
+      schema: {
+        querystring: {
+          type: "object",
+          required: ["projectId"],
+          properties: {
+            projectId: { type: "integer", minimum: 1 },
+          },
+        },
+      },
+    },
+    async (request, _reply) => {
+      const params = request.query as { projectId: number };
 
-    if (!projectId || projectId < 1 || !Number.isInteger(projectId)) {
-      reply.status(400);
-      return { error: "Invalid projectId" };
-    }
-
-    const result = await db.$queryRaw`
+      const result = await db.$queryRaw`
       SELECT DISTINCT ON (hostname, name)
         id,
         name,
@@ -72,12 +75,13 @@ export async function metricsRoutes(app: FastifyInstance): Promise<void> {
         received_at AS "receivedAt",
         project_id AS "projectId"
       FROM metrics
-      WHERE project_id = ${projectId}
+      WHERE project_id = ${params.projectId}
       ORDER BY hostname, name, received_at DESC
     `;
 
-    return result;
-  });
+      return result;
+    },
+  );
 
   app.post(
     "/metrics",
