@@ -2,10 +2,10 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import type { FastifyError } from "fastify";
 import { Prisma } from "./generated/prisma/client.js";
-import { metricsRoutes } from "./routes/metrics.js";
-import { healthRoutes } from "./routes/health.js";
-import { projectRoutes } from "./routes/projects.js";
-import { alertRulesRoutes } from "./routes/alertRules.js";
+import { metricsRoutes } from "./routes/metric.routes.js";
+import { healthRoutes } from "./routes/health.routes.js";
+import { projectRoutes } from "./routes/project.routes.js";
+import { alertRulesRoutes } from "./routes/alertRules.routes.js";
 
 // Build app
 export async function buildApp() {
