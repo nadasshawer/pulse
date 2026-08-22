@@ -17,7 +17,18 @@ const config: Config = {
         module: { type: "es6" },
       },
     ],
+    "^.+\\.mjs$": [
+      "@swc/jest",
+      {
+        jsc: {
+          parser: { syntax: "typescript" },
+          target: "es2022",
+        },
+        module: { type: "es6" },
+      },
+    ],
   },
+  transformIgnorePatterns: ["/node_modules/(?!@prisma/client/)"],
   testMatch: ["**/tests/**/*.test.ts"],
   clearMocks: true,
 };
