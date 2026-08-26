@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import type { Metric } from "../types/models.js";
+import type { Metric, Rule } from "../types/models.js";
 import { db } from "../database.js";
 import { checkAlerts } from "../services/alertRules.service.js";
 
@@ -101,6 +101,7 @@ export async function metricsRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request, reply) => {
       const apiKey = request.headers["x-api-key"];
+      let newAlertEvent;
 
       if (!apiKey || typeof apiKey !== "string") {
         reply.status(401);
@@ -117,7 +118,7 @@ export async function metricsRoutes(app: FastifyInstance): Promise<void> {
         return { error: "Unauthorized" };
       }
 
-      const metric = await db.metric.create({
+      const newMetric = await db.metric.create({
         data: {
           name: reqBody.name,
           value: reqBody.value,
@@ -126,10 +127,19 @@ export async function metricsRoutes(app: FastifyInstance): Promise<void> {
         },
       });
 
-      const firedAlerts = await checkAlerts(metric);
+      const firedAlerts = await checkAlerts(newMetric);
+
+      for (const alert of firedAlerts) {
+        newAlertEvent = await db.alertEvent.create({
+          data: {
+            metricId: newMetric.id,
+            ruleId: alert.id,
+          },
+        });
+      }
 
       reply.status(201);
-      return { metric, firedAlerts };
+      return { newMetric, firedAlerts };
     },
   );
 }

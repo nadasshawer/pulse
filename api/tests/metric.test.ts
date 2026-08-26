@@ -27,6 +27,7 @@ describe("GET /metrics", () => {
 describe("POST /metrics", () => {
   let app: FastifyInstance;
   let apiKey: string;
+  let projectId: number;
 
   beforeAll(async () => {
     app = await buildApp();
@@ -39,7 +40,21 @@ describe("POST /metrics", () => {
     });
 
     apiKey = projResponse.json().apiKey;
-    expect(projResponse.statusCode).toBe(201);
+    projectId = projResponse.json().id;
+
+    // Create a rule for that project
+    const ruleResponse = await app.inject({
+      method: "POST",
+      url: "/alert-rules",
+      payload: {
+        projectId: projectId,
+        metricName: "test-metric",
+        threshold: 10,
+        operator: "gt",
+      },
+    });
+
+    expect(ruleResponse.statusCode).toBe(201);
   });
 
   afterAll(async () => {
@@ -90,7 +105,7 @@ describe("POST /metrics", () => {
     const body = response.json();
 
     expect(response.statusCode).toBe(201);
-    expect(body.metric.name).toBe("test-metric");
+    expect(body.newMetric.name).toBe("test-metric");
     expect(Array.isArray(body.firedAlerts)).toBe(true);
   });
 });
