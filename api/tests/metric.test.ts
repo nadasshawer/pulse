@@ -42,19 +42,7 @@ describe("POST /metrics", () => {
     apiKey = projResponse.json().apiKey;
     projectId = projResponse.json().id;
 
-    // Create a rule for that project
-    const ruleResponse = await app.inject({
-      method: "POST",
-      url: "/alert-rules",
-      payload: {
-        projectId: projectId,
-        metricName: "test-metric",
-        threshold: 10,
-        operator: "gt",
-      },
-    });
-
-    expect(ruleResponse.statusCode).toBe(201);
+    expect(projResponse.statusCode).toBe(201);
   });
 
   afterAll(async () => {

@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import type { Metric, Rule } from "../types/models.js";
+import type { Metric } from "../types/models.js";
 import { db } from "../database.js";
 import { checkAlerts } from "../services/alertRules.service.js";
 

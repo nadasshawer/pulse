@@ -6,6 +6,7 @@ import { metricsRoutes } from "./routes/metric.routes.js";
 import { healthRoutes } from "./routes/health.routes.js";
 import { projectRoutes } from "./routes/project.routes.js";
 import { alertRulesRoutes } from "./routes/alertRules.routes.js";
+import { alertEventsRoutes } from "./routes/alertEvents.routes.js";
 
 // Build app
 export async function buildApp() {
@@ -39,6 +40,7 @@ export async function buildApp() {
   await app.register(healthRoutes);
   await app.register(projectRoutes);
   await app.register(alertRulesRoutes);
+  await app.register(alertEventsRoutes);
 
   return app;
 }
