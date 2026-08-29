@@ -1,15 +1,18 @@
-# 📈 Pulse: Metrics Monitoring Platform
+# 📈 Pulse: Mini Logging & Monitoring System
 
 <p align="left">
-  <img src="https://img.shields.io/badge/Type-Monitoring%20Platform-5c677d?style=for-the-badge&logo=datadog&logoColor=white" />
+  <img src="https://img.shields.io/badge/Status-Work%20in%20Progress-ff6b6b?style=for-the-badge&logo=github&logoColor=white" />
+  <img src="https://img.shields.io/badge/Type-Logging%20%26%20Monitoring-e85d04?style=for-the-badge&logo=grafana&logoColor=white" />
   <img src="https://img.shields.io/badge/Language-TypeScript-3178c6?style=for-the-badge&logo=typescript&logoColor=white" />
-  <img src="https://img.shields.io/badge/API-Fastify-000000?style=for-the-badge&logo=fastify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/API-Fastify-09BFAA?style=for-the-badge&logo=fastify&logoColor=white" />
+  <img src="https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/Target-Linux%20Homelab-FCC624?style=for-the-badge&logo=linux&logoColor=black" />
 </p>
 
-**Pulse** is a self-hosted metrics monitoring system: a Node agent collects CPU and memory from a host, a Fastify API stores and evaluates them against alert rules, and a React dashboard visualizes the data. Built as a Datadog-style learning project with real Postgres persistence, API-key tenancy, automated tests, and GitHub Actions CI.
+**Pulse** is a **mini logging and monitoring system** designed to run on real traffic from a **self-hosted Linux homelab**. A Node agent collects host telemetry (CPU and memory today, with room to grow into broader logs/events), a Fastify + PostgreSQL API stores data and evaluates alert rules, and a React dashboard surfaces what’s happening across your machines.
 
-**Status:** Base v1 is complete (ingest → rules → alert events → tests → CI). Next focus: frontend polish, then advanced monitoring features (alert lifecycle, webhooks, and more).
+Same shape as tools like Datadog or Grafana — projects, API keys, metrics ingest, threshold alerts, persisted alert history, automated tests, and CI — at homelab scale you can actually own and extend.
 
 ---
 
@@ -18,9 +21,9 @@
 **API & Data**
 
 <p align="left">
-  <img src="https://img.shields.io/badge/Fastify-5-000000?style=flat-square&logo=fastify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Prisma-7-2D3748?style=flat-square&logo=prisma&logoColor=white" />
-  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Fastify-5-09BFAA?style=flat-square&logo=fastify&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prisma-7-5A67D8?style=flat-square&logo=prisma&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-336791?style=flat-square&logo=postgresql&logoColor=white" />
   <img src="https://img.shields.io/badge/TypeScript-7-3178c6?style=flat-square&logo=typescript&logoColor=white" />
 </p>
 
@@ -30,6 +33,7 @@
   <img src="https://img.shields.io/badge/Node.js-Agent-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Linux-Homelab-FCC624?style=flat-square&logo=linux&logoColor=black" />
 </p>
 
 **Quality & CI**
@@ -224,8 +228,9 @@ pulse/
 - [x] **Milestone 3**: Alert rules, evaluation, alert event persistence
 - [x] **Milestone 4**: Jest suite + GitHub Actions CI (**base v1**)
 - [ ] **Milestone 5**: Frontend dashboard (metrics, latest, alert history)
-- [ ] **Milestone 6**: Alert lifecycle (firing / resolved) + webhooks
-- [ ] **Milestone 7**: Auth, Docker Compose, optional log ingest
+- [ ] **Milestone 6**: Deploy agent on self-hosted Linux homelab
+- [ ] **Milestone 7**: Alert lifecycle (firing / resolved) + webhooks
+- [ ] **Milestone 8**: Auth, Docker Compose, fuller log ingest
 
 ---
 
