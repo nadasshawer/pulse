@@ -46,7 +46,7 @@ describe("POST /alert-rules", () => {
     await app.close();
   });
 
-  it("returns 201 when alert rule is created", async () => {
+  it("returns 201 when alert rule is created with gt operator", async () => {
     const response = await app.inject({
       method: "POST",
       url: "/alert-rules",

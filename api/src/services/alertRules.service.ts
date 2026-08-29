@@ -12,7 +12,13 @@ export async function checkAlerts(metric: Metric) {
       continue;
     }
 
-    if (r.operator === "gt" && metric.value > r.threshold) {
+    if (
+      (r.operator === "gt" && metric.value > r.threshold) ||
+      (r.operator === "lt" && metric.value < r.threshold) ||
+      (r.operator === "gte" && metric.value >= r.threshold) ||
+      (r.operator === "lte" && metric.value <= r.threshold) ||
+      (r.operator === "eq" && metric.value === r.threshold)
+    ) {
       fired.push(r);
     }
   }

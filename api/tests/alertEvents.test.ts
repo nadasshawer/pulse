@@ -64,4 +64,51 @@ describe("GET /alert-events", () => {
     expect(Array.isArray(response.json())).toBe(true);
     expect(response.json().length).toBeGreaterThan(0);
   });
+
+  it("returns 200 with alert events array for lt operator", async () => {
+    const rulesResponse = await app.inject({
+      method: "POST",
+      url: "/alert-rules",
+      payload: {
+        projectId: projectId,
+        metricName: "test-metric",
+        threshold: 10,
+        operator: "lt",
+      },
+    });
+
+    const metricResponse = await app.inject({
+      method: "POST",
+      url: "/metrics",
+      headers: { "x-api-key": apiKey },
+      payload: {
+        name: "test-metric",
+        value: 0,
+        hostname: "test-host",
+      },
+    });
+
+    const alertEventsResponse = await app.inject({
+      method: "GET",
+      url: `/alert-events?projectId=${projectId}`,
+    });
+
+    expect(rulesResponse.statusCode).toBe(201);
+    expect(metricResponse.statusCode).toBe(201);
+    expect(alertEventsResponse.statusCode).toBe(200);
+    expect(rulesResponse.json().metricName).toBe(
+      metricResponse.json().newMetric.name,
+    );
+    expect(
+      alertEventsResponse
+        .json()
+        .some(
+          (e: { metricId: number }) =>
+            e.metricId === metricResponse.json().newMetric.id,
+        ),
+    ).toBe(true);
+
+    expect(metricResponse.json().firedAlerts.length).toBeGreaterThan(0);
+    expect(alertEventsResponse.json().length).toBeGreaterThan(0);
+  });
 });
